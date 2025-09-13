@@ -8,9 +8,11 @@ function PlayerStats() {
   return (
     <div className="player-stats">
       <h2>Hunter: {playerName}</h2>
-      <div className="hp-bar">
+      <div className="hp-container">
         <span>HP: {hp}</span>
-        <div className="hp-bar-fill" style={{ width: `${hp}%` }}></div>
+        <div className="hp-bar">
+          <div className="hp-bar-fill" style={{ width: `${hp}%` }}></div>
+        </div>
       </div>
       <div className="inventory">
         <h3>Inventory:</h3>

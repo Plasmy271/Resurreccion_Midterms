@@ -8,17 +8,23 @@ import './App.css';
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
   const [playerName, setPlayerName] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Check for saved game
     const savedGame = localStorage.getItem('aswangHunterSave');
     if (savedGame) {
-      const gameState = JSON.parse(savedGame);
-      if (gameState.playerName) {
-        setPlayerName(gameState.playerName);
-        setGameStarted(true);
+      try {
+        const gameState = JSON.parse(savedGame);
+        if (gameState.playerName) {
+          setPlayerName(gameState.playerName);
+          setGameStarted(true);
+        }
+      } catch (e) {
+        console.error('Failed to parse saved game:', e);
       }
     }
+    setIsLoading(false);
   }, []);
 
   const handleStartGame = (name) => {
@@ -31,6 +37,10 @@ function App() {
     setPlayerName('');
     localStorage.removeItem('aswangHunterSave');
   };
+
+  if (isLoading) {
+    return <div className="App">Loading...</div>;
+  }
 
   return (
     <div className="App">

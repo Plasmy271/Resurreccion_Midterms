@@ -30,6 +30,7 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
+  width: 250px;
 }
 
 .start-screen button, .choice-btn, .play-again-btn {
@@ -56,17 +57,25 @@
 
 .player-stats {
   border: 1px solid #8b0000;
-  padding: 10px;
+  padding: 15px;
   border-radius: 5px;
   background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.hp-container {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
 }
 
 .hp-bar {
   height: 20px;
   background-color: #f0f0f0;
   border-radius: 10px;
-  margin: 10px 0;
+  margin-top: 5px;
   position: relative;
+  overflow: hidden;
 }
 
 .hp-bar-fill {
@@ -76,11 +85,33 @@
   transition: width 0.5s;
 }
 
+.inventory {
+  margin-top: 15px;
+}
+
+.inventory h3 {
+  margin-bottom: 8px;
+}
+
+.inventory ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.inventory li {
+  padding: 5px;
+  background-color: #f9f9f9;
+  margin: 3px 0;
+  border-radius: 3px;
+}
+
 .story-node {
   border: 1px solid #8b0000;
   padding: 20px;
   border-radius: 5px;
   background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .story-text {
@@ -95,12 +126,18 @@
   gap: 10px;
 }
 
+.choice-btn {
+  text-align: left;
+  padding: 12px;
+}
+
 .game-over-screen {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 80vh;
+  background-color: #f5f5dc; /* Added background color */
 }
 
 .ending-text {
@@ -108,4 +145,5 @@
   margin: 20px 0;
   line-height: 1.5;
   text-align: center;
+  max-width: 600px;
 }

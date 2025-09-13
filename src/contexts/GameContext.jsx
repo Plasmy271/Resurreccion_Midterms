@@ -1,6 +1,5 @@
-// contexts/GameContext.js
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import storyData from '../assets/data/story.json';
+import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
+import storyData from '../data/story.json';
 
 const GameContext = createContext();
 
@@ -36,7 +35,9 @@ function gameReducer(state, action) {
     case 'SET_VICTORY':
       return { ...state, victory: true };
     case 'RESET_GAME':
-      return { ...initialState, playerName: action.payload };
+      return { ...initialState, playerName: action.payload || '' };
+    case 'SET_PLAYER_NAME':
+      return { ...state, playerName: action.payload };
     default:
       return state;
   }
@@ -48,12 +49,36 @@ export function GameProvider({ children, playerName, onResetGame }) {
     playerName
   });
 
+  // Load saved game on initial render
+  useEffect(() => {
+    const savedGame = localStorage.getItem('aswangHunterSave');
+    if (savedGame) {
+      try {
+        const gameState = JSON.parse(savedGame);
+        // Only load if we have a valid saved state
+        if (gameState.currentNode && gameState.currentNode !== 'start') {
+          dispatch({ type: 'LOAD_SAVED_GAME', payload: gameState });
+        }
+      } catch (e) {
+        console.error('Failed to parse saved game:', e);
+      }
+    }
+  }, []);
+
   // Save game state to localStorage whenever it changes
   useEffect(() => {
-    if (state.playerName) {
+    // Only save if we're not in the initial state
+    if (state.currentNode !== 'start' || state.inventory.length > 0 || state.hp !== 100) {
       localStorage.setItem('aswangHunterSave', JSON.stringify(state));
     }
   }, [state]);
+
+  // Update playerName when prop changes
+  useEffect(() => {
+    if (playerName && playerName !== state.playerName) {
+      dispatch({ type: 'SET_PLAYER_NAME', payload: playerName });
+    }
+  }, [playerName, state.playerName]);
 
   // Check for game over due to HP loss
   useEffect(() => {
@@ -63,7 +88,7 @@ export function GameProvider({ children, playerName, onResetGame }) {
     }
   }, [state.hp, state.gameOver]);
 
-  const navigateToNode = (nodeId) => {
+  const navigateToNode = useCallback((nodeId) => {
     dispatch({ type: 'SET_CURRENT_NODE', payload: nodeId });
     
     // Apply any onArrive effects
@@ -76,7 +101,16 @@ export function GameProvider({ children, playerName, onResetGame }) {
         dispatch({ type: 'TAKE_DAMAGE', payload: node.onArrive.takeDamage });
       }
     }
-  };
+
+    // Check if this is an ending node
+    if (node && node.isEnding) {
+      if (nodeId === 'goodEnding') {
+        dispatch({ type: 'SET_VICTORY' });
+      } else {
+        dispatch({ type: 'SET_GAME_OVER' });
+      }
+    }
+  }, []);
 
   const resetGame = () => {
     dispatch({ type: 'RESET_GAME', payload: playerName });
