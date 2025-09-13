@@ -1,8 +1,8 @@
-// App.js
 import React, { useState, useEffect } from 'react';
 import { GameProvider } from './contexts/GameContext';
 import StartScreen from './components/StartScreen';
 import GameScreen from './components/GameScreen';
+import Background from './components/Background';
 import './App.css';
 
 function App() {
@@ -27,11 +27,13 @@ function App() {
     setIsLoading(false);
   }, []);
 
+  //Starts the game with the player's name.
   const handleStartGame = (name) => {
     setPlayerName(name);
     setGameStarted(true);
   };
 
+  //Resets the game by clearing local storage and resetting state. Activated when the player clicks "Play Again".
   const handleResetGame = () => {
     setGameStarted(false);
     setPlayerName('');
@@ -42,9 +44,11 @@ function App() {
     return <div className="App">Loading...</div>;
   }
 
+  // Renders either the StartScreen or GameScreen based on whether the game has started.
   return (
     <div className="App">
       <GameProvider playerName={playerName} onResetGame={handleResetGame}>
+        <Background />
         {!gameStarted ? (
           <StartScreen onStartGame={handleStartGame} />
         ) : (

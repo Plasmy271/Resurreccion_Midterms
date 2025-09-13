@@ -3,27 +3,31 @@ import storyData from '../data/story.json';
 
 const GameContext = createContext();
 
+//Upon the start of a new game, sets the player to the starting note with their starter stats and an empty inventory.
 const initialState = {
   currentNode: 'start',
   playerName: '',
   hp: 100,
   inventory: [],
   gameOver: false,
-  victory: false
+  victory: false,
+  backgroundImage: null
 };
 
 function gameReducer(state, action) {
   switch (action.type) {
-    case 'LOAD_SAVED_GAME':
+    case 'LOAD_SAVED_GAME': //Checks for any savestates in LocalStorage.
       return { ...state, ...action.payload };
-    case 'SET_CURRENT_NODE':
+    case 'SET_CURRENT_NODE': // Moves to the next node.
       return { ...state, currentNode: action.payload };
-    case 'ADD_ITEM':
+    case 'ADD_ITEM': // Adds an item to the inventory.
       return { 
         ...state, 
         inventory: [...state.inventory, action.payload] 
       };
-    case 'TAKE_DAMAGE':
+    case 'SET_BACKGROUND': // Sets the background image.
+      return { ...state, backgroundImage: action.payload };
+    case 'TAKE_DAMAGE': // Decreases HP and checks for game over.
       const newHp = state.hp - action.payload;
       return { 
         ...state, 
@@ -43,9 +47,10 @@ function gameReducer(state, action) {
   }
 }
 
-export function GameProvider({ children, playerName, onResetGame }) {
-  const [state, dispatch] = useReducer(gameReducer, {
-    ...initialState,
+
+export function GameProvider({ children, playerName, onResetGame }) { 
+    const [state, dispatch] = useReducer(gameReducer, {
+    ...initialState, 
     playerName
   });
 
@@ -73,14 +78,14 @@ export function GameProvider({ children, playerName, onResetGame }) {
     }
   }, [state]);
 
-  // Update playerName when prop changes
+  // Update playerName if it changes from props
   useEffect(() => {
     if (playerName && playerName !== state.playerName) {
       dispatch({ type: 'SET_PLAYER_NAME', payload: playerName });
     }
   }, [playerName, state.playerName]);
 
-  // Check for game over due to HP loss
+  // Check for game over due to HP reaching 0.
   useEffect(() => {
     if (state.hp <= 0 && !state.gameOver) {
       dispatch({ type: 'SET_CURRENT_NODE', payload: 'gameOver_hp' });
@@ -89,11 +94,17 @@ export function GameProvider({ children, playerName, onResetGame }) {
   }, [state.hp, state.gameOver]);
 
   const navigateToNode = useCallback((nodeId) => {
-    dispatch({ type: 'SET_CURRENT_NODE', payload: nodeId });
+  dispatch({ type: 'SET_CURRENT_NODE', payload: nodeId });
     
     // Apply any onArrive effects
     const node = storyData[nodeId];
-    if (node && node.onArrive) {
+  if (node) {
+    // Set background image if available
+    if (node.backgroundImage) {
+      dispatch({ type: 'SET_BACKGROUND', payload: node.backgroundImage });
+    }
+    
+    if (node.onArrive) {
       if (node.onArrive.addItem) {
         dispatch({ type: 'ADD_ITEM', payload: node.onArrive.addItem });
       }
@@ -101,17 +112,19 @@ export function GameProvider({ children, playerName, onResetGame }) {
         dispatch({ type: 'TAKE_DAMAGE', payload: node.onArrive.takeDamage });
       }
     }
+  }
 
     // Check if this is an ending node
     if (node && node.isEnding) {
-      if (nodeId === 'goodEnding') {
-        dispatch({ type: 'SET_VICTORY' });
-      } else {
-        dispatch({ type: 'SET_GAME_OVER' });
-      }
+    if (nodeId === 'goodEnding') {
+      dispatch({ type: 'SET_VICTORY' });
+    } else {
+      dispatch({ type: 'SET_GAME_OVER' });
     }
-  }, []);
+  }
+}, []);
 
+  //Sends the player back to the start screen and gets rid of the previous save state.
   const resetGame = () => {
     dispatch({ type: 'RESET_GAME', payload: playerName });
     onResetGame();

@@ -1,7 +1,7 @@
-// components/PlayerStats.js
 import React from 'react';
 import { useGame } from '../contexts/GameContext';
 
+//Shows all of the player's name, hp, and inventory.
 function PlayerStats() {
   const { playerName, hp, inventory } = useGame();
 

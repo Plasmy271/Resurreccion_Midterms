@@ -1,9 +1,9 @@
-// components/GameOverScreen.js
 import React from 'react';
 import { useGame } from '../contexts/GameContext';
 
+//Shows the gameover screen.
 function GameOverScreen() {
-  const { storyData, currentNode, resetGame, victory } = useGame();
+  const { storyData, currentNode, resetGame, victory } = useGame(); 
   const node = storyData[currentNode];
 
   return (
