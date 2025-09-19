@@ -1,34 +1,62 @@
-export default function App() {
+import React, { useState, useEffect } from 'react';
+import { GameProvider } from './contexts/GameContext';
+import StartScreen from './components/StartScreen';
+import GameScreen from './components/GameScreen';
+import Background from './components/Background';
+import './App.css';
+
+function App() {
+  const [gameStarted, setGameStarted] = useState(false);
+  const [playerName, setPlayerName] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Check for saved game
+    const savedGame = localStorage.getItem('aswangHunterSave');
+    if (savedGame) {
+      try {
+        const gameState = JSON.parse(savedGame);
+        if (gameState.playerName) {
+          setPlayerName(gameState.playerName);
+          setGameStarted(true);
+        }
+      } catch (e) {
+        console.error('Failed to parse saved game:', e);
+      }
+    }
+    setIsLoading(false);
+  }, []);
+
+  //Starts the game with the player's name.
+  const handleStartGame = (name) => {
+    setPlayerName(name);
+    setGameStarted(true);
+  };
+
+  //Resets the game by clearing local storage and resetting state. Activated when the player clicks "Play Again".
+  const handleResetGame = () => {
+    setGameStarted(false);
+    setPlayerName('');
+    localStorage.removeItem('aswangHunterSave');
+  };
+
+  if (isLoading) {
+    return <div className="App">Loading...</div>;
+  }
+
+  // Renders either the StartScreen or GameScreen based on whether the game has started.
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        fontFamily: "sans-serif",
-        background: "#f9fafb",
-        color: "#111",
-        textAlign: "center",
-        padding: "2rem",
-      }}
-    >
-      <h1
-        style={{
-          fontSize: "2.5rem",
-          marginBottom: "0.5rem",
-          fontWeight: 600,
-        }}
-      >
-        Welcome to{" "}
-        <span style={{ color: "#2563eb" }}>3rdYear1stSemMidterms</span> 🚀
-      </h1>
-      <p style={{ fontSize: "1.1rem", color: "#555", marginBottom: "2rem" }}>
-        Your project is ready. Start building amazing things!
-      </p>
-      
-      
+    <div className="App">
+      <GameProvider playerName={playerName} onResetGame={handleResetGame}>
+        <Background />
+        {!gameStarted ? (
+          <StartScreen onStartGame={handleStartGame} />
+        ) : (
+          <GameScreen />
+        )}
+      </GameProvider>
     </div>
   );
 }
+
+export default App;

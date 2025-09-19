@@ -1,0 +1,185 @@
+/* App.css */
+/* Global reset to remove default margins and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  background-color: black;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+.App {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Courier New', monospace;
+  background-color: rgba(0, 0, 0, 0.95);
+  color: #f0f0f0;
+  min-height: 100vh;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.background-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.2;
+  z-index: -1;
+  background-color: #000;
+}
+
+.start-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+}
+
+.start-screen h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #ff6b6b;
+}
+
+.start-screen input {
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #444;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 250px;
+  background-color: #222;
+  color: #fff;
+}
+
+.start-screen button, .choice-btn, .play-again-btn {
+  padding: 10px 20px;
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 5px;
+  transition: background-color 0.3s;
+}
+
+.start-screen button:hover, .choice-btn:hover, .play-again-btn:hover {
+  background-color: #ff8e8e;
+}
+
+.game-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.player-stats {
+  border: 1px solid #ff6b6b;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: #111;
+  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
+}
+
+.hp-container {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+}
+
+.hp-bar {
+  height: 20px;
+  background-color: #333;
+  border-radius: 10px;
+  margin-top: 5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hp-bar-fill {
+  height: 100%;
+  background-color: #ff6b6b;
+  border-radius: 10px;
+  transition: width 0.5s;
+}
+
+.inventory {
+  margin-top: 15px;
+}
+
+.inventory h3 {
+  margin-bottom: 8px;
+}
+
+.inventory ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.inventory li {
+  padding: 5px;
+  background-color: #222;
+  margin: 3px 0;
+  border-radius: 3px;
+  color: #fff;
+}
+
+.story-node {
+  border: 1px solid #ff6b6b;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #111;
+  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
+}
+
+.story-text {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.choice-btn {
+  text-align: left;
+  padding: 12px;
+}
+
+.game-over-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  background-color: #000;
+  color: white;
+  margin: -20px; /* Counteract parent padding */
+  padding: 20px;
+}
+
+.ending-text {
+  font-size: 1.2rem;
+  margin: 20px 0;
+  line-height: 1.5;
+  text-align: center;
+  max-width: 600px;
+}
